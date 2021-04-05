@@ -53,10 +53,15 @@ onPubSubMessage.add(sendMessageToAllClients);
 			process.exit(1)
 		}
 	});
+
+	sendMessageToPubSub();
 })();
 
-setInterval(async () => {
+async function sendMessageToPubSub () {
 	const date = new Date();
-	const message = `Current time is ${date.toISOString()}`
+	const message = `Current time is ${date.toISOString()} at server ${INSTANCE_ID}`;
 	await sendMessageToTopic(message);
-}, 5000);
+
+	const delay = Math.round(10000 * Math.random());
+	setTimeout(sendMessageToPubSub, delay);
+}
