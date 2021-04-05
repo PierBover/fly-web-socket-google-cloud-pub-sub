@@ -1,0 +1,31 @@
+{
+  "name": "fly-web-socket-google-cloud-pub-sub",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "dev": "nodemon main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PierBover/fly-web-socket-google-cloud-pub-sub.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PierBover/fly-web-socket-google-cloud-pub-sub/issues"
+  },
+  "homepage": "https://github.com/PierBover/fly-web-socket-google-cloud-pub-sub#readme",
+  "dependencies": {
+    "@google-cloud/pubsub": "^2.10.0",
+    "fastify": "^3.14.1",
+    "fastify-static": "^4.0.1",
+    "fastify-websocket": "^3.1.0",
+    "mini-signals": "^1.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}
