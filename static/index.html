@@ -1,28 +1,66 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Fly Web Sockets Demo</title>
+	<title>Alien Landing Notifications</title>
 	<style>
 		body {
 			color: rgb(38, 68, 89);
 			font-family: sans-serif;
-			padding: 4rem;
+			padding: 2rem;
 		}
 
 		.wrap {
-			width: 50rem;
+			width: 35rem;
 			margin: 0 auto;
 		}
 
-		h1, h3 {
+		h1, h2 {
+			text-align: center;
 			font-weight: normal;
+		}
+
+		button {
+			display: block;
+			margin: 0 auto;
+			background-color: white;
+			color: red;
+			padding: 1rem;
+			font-size: 1.1rem;
+			color: red;
+			border-radius: 1rem;
+			cursor: pointer;
+			border: 2px solid red;
+			transition: all .2s;
+			margin-bottom: 2rem;
+		}
+
+		button:hover {
+			background-color: red;
+			color: white;
+		}
+
+		button:active {
+			background-color: red;
+			color: red;
+		}
+
+		#messages {
+			max-height: 50vh;
+			background-color: #f8f8f8;
+			padding: 1rem;
+			overflow-y: scroll;
+		}
+
+		#messages > div {
+			margin-bottom: .5rem;
 		}
 	</style>
 </head>
 <body>
 	<div class="wrap">
-		<h1>Fly Web Sockets Demo</h1>
-		<h2>Messages received</h2>
+		<h1>👽 Alien Landing Notifications</h1>
+		<button id="button">Click here if you've seen an alien landing!</button>
+		<h2>Broadcast notifications</h2>
 		<div id="messages"></div>
 		<script src="/index.js"></script>
 	</div>

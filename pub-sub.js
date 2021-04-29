@@ -4,7 +4,7 @@ const onPubSubMessage = new Signal();
 const {PubSub} = require('@google-cloud/pubsub');
 const pubSubClient = new PubSub({keyFilename: 'google-service-account.json'});
 
-const TOPIC_NAME = 'USER_NOTIFICATIONS';
+const TOPIC_NAME = 'ALIEN_NOTIFICATIONS';
 const SUBSCRIPTION_NAME = INSTANCE_ID;
 
 let topic, subscription;
@@ -51,23 +51,37 @@ async function initSubscription () {
 }
 
 function onMessageHandler (pubSubMessage) {
-	const message = pubSubMessage.data.toString();
-	pubSubMessage.ack();
-	onPubSubMessage.dispatch(message);
+	const jsonString = pubSubMessage.data.toString();
+
+	try {
+		pubSubMessage.ack();
+		onPubSubMessage.dispatch(jsonString);
+	} catch (error) {
+		console.log(error);
+	}
 }
 
 async function deleteSubscription () {
 	await subscription.delete();
 }
 
-async function sendMessageToTopic (message) {
-	const buffer = Buffer.from(message);
+async function sendWsMessageToTopic (wsMessage) {
+
+	const json = JSON.parse(wsMessage);
+
+	const jsonString = JSON.stringify({
+		sender: INSTANCE_ID,
+		regionCode: REGION_CODE,
+		...json
+	});
+
+	const buffer = Buffer.from(jsonString);
 	await topic.publish(buffer);
 }
 
 module.exports = {
 	initPubSub,
 	deleteSubscription,
-	sendMessageToTopic,
+	sendWsMessageToTopic,
 	onPubSubMessage
 };

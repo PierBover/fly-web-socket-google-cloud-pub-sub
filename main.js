@@ -1,9 +1,10 @@
 global.INSTANCE_ID = process.env.FLY_ALLOC_ID || 'LOCAL_INSTANCE_ID';
+global.REGION_CODE = process.env.FLY_REGION || 'LOCAL_REGION';
 
 const path = require('path');
 const fastify = require('fastify')({logger: true});
 
-const {initPubSub, deleteSubscription, onPubSubMessage, sendMessageToTopic} = require('./pub-sub.js');
+const {initPubSub, deleteSubscription, onPubSubMessage, sendWsMessageToTopic} = require('./pub-sub.js');
 
 fastify.register(require('fastify-websocket'),{
 	options: {
@@ -16,17 +17,26 @@ fastify.register(require('fastify-static'), {
 });
 
 fastify.get('/ws', { websocket: true }, (connection) => {
-	connection.socket.on('message', message => {
-		console.log('WS message received:', message);
-		connection.socket.send(`Welcome!`);
+
+	const jsonString = JSON.stringify({
+		message: `CONNECTED`,
+		regionCode: REGION_CODE
+	});
+
+	connection.socket.send(jsonString);
+
+	connection.socket.on('message', (wsMessage) => {
+		console.log('WS message received at', REGION_CODE, wsMessage);
+		sendWsMessageToTopic(wsMessage);
 	});
 });
+
+// Delete the subscription when Fly is requesting to kil the VM
 
 async function onVmKill () {
 	fastify.log.info('VM Kill requested for instance ' + INSTANCE_ID);
 	await deleteSubscription();
 	fastify.log.info('PubSub subscription deleted for instance ' + INSTANCE_ID);
-	sendMessageToAllClients('Server closing down!')
     process.exit();
 }
 
@@ -53,15 +63,4 @@ onPubSubMessage.add(sendMessageToAllClients);
 			process.exit(1)
 		}
 	});
-
-	sendMessageToPubSub();
 })();
-
-async function sendMessageToPubSub () {
-	const date = new Date();
-	const message = `Current time is ${date.toISOString()} at server ${INSTANCE_ID}`;
-	await sendMessageToTopic(message);
-
-	const delay = Math.round(10000 * Math.random());
-	setTimeout(sendMessageToPubSub, delay);
-}
