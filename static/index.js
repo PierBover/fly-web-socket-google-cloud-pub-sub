@@ -83,3 +83,5 @@ function onSocketMessage (event) {
 
 	messagesElement.prepend(div);
 }
+
+initWebSockets();
