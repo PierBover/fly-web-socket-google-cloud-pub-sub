@@ -5,7 +5,7 @@ const {PubSub} = require('@google-cloud/pubsub');
 const pubSubClient = new PubSub({keyFilename: 'google-service-account.json'});
 
 const TOPIC_NAME = 'ALIEN_NOTIFICATIONS';
-const SUBSCRIPTION_NAME = INSTANCE_ID;
+const SUBSCRIPTION_NAME = 'ID_' + INSTANCE_ID;
 
 let topic, subscription;
 

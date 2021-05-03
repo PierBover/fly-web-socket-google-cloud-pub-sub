@@ -1,4 +1,4 @@
-global.INSTANCE_ID = process.env.FLY_ALLOC_ID || 'LOCAL_INSTANCE_ID';
+global.INSTANCE_ID = process.env.FLY_ALLOC_ID || '601c3c2b-1df1-1d49-30de-b6111aa52bd5';
 global.REGION_CODE = process.env.FLY_REGION || 'LOCAL_REGION';
 
 const path = require('path');
@@ -57,9 +57,9 @@ onPubSubMessage.add(sendMessageToAllClients);
 
 	fastify.log.info('PubSub ready!');
 
-	fastify.listen(3000, err => {
-		if (err) {
-			fastify.log.error(err)
+	fastify.listen(process.env.PORT || 8080, '0.0.0.0', (error) => {
+		if (error) {
+			fastify.log.error(error);
 			process.exit(1)
 		}
 	});

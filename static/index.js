@@ -1,5 +1,6 @@
-const server = 'ws://' + location.host + '/ws'
-const socket = new WebSocket(server);
+const protocol = location.protocol === 'https:' ? 'wss://' : 'ws://';
+const server = protocol + location.host + '/ws'
+let socket;
 
 const messagesElement = document.getElementById('messages');
 const button = document.getElementById('button');
@@ -36,22 +37,33 @@ const regions = [
 	{code: 'syd', name: 'Sydney, Australia'},
 	{code: 'vin', name: 'Vint Hill, Virginia'},
 	{code: 'yyz', name: 'Toronto, Canada'},
-	{code: 'LOCAL_REGION', name: 'Local region for dev'}
+	{code: 'LOCAL_REGION', name: 'Local region'}
 ];
 
-socket.addEventListener('open', function (event) {
-	console.log('WS socket open');
-});
+function initWebSockets () {
+	socket = new WebSocket(server);
 
-socket.addEventListener('close', function (event) {
+	socket.addEventListener('open', function (event) {
+		console.log('WS socket open');
+	});
+
+	socket.addEventListener('close', onSocketClose);
+	socket.addEventListener('message', onSocketMessage);
+}
+
+function onSocketClose () {
 	console.log('WS socket closed!');
 
 	const div = document.createElement("div");
-	div.textContent = `😱 you've been disconnected from the WS server!`;
+	div.textContent = `😱 you've disconnected from the WS server! Reconnecting...`;
 	messagesElement.prepend(div);
-});
 
-socket.addEventListener('message', function (event) {
+	setTimeout(() => {
+		initWebSockets();
+	}, 1000);
+}
+
+function onSocketMessage (event) {
 	console.log('WS message received:', event.data);
 
 	const json = JSON.parse(event.data);
@@ -70,4 +82,4 @@ socket.addEventListener('message', function (event) {
 	}
 
 	messagesElement.prepend(div);
-});
+}
